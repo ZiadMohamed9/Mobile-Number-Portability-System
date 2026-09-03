@@ -30,7 +30,7 @@ public class NationalIdVerifier {
         return MessageDigest.isEqual(calculateHmac(nationalId), expectedHmac);
     }
 
-    private byte[] calculateHmac(String nationalId) {
+    public byte[] calculateHmac(String nationalId) {
         try {
             Mac mac = Mac.getInstance(HMAC_ALGORITHM);
             mac.init(hmacKey);

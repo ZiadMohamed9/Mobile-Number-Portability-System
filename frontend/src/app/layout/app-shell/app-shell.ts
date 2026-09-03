@@ -25,6 +25,10 @@ export class AppShell {
     { initialValue: this.router.url },
   );
 
+  protected readonly isAddNumberActive = computed(() =>
+    this.currentUrl().startsWith('/numbers/new'),
+  );
+
   protected readonly isNewRequestActive = computed(() =>
     this.currentUrl().startsWith('/requests/new'),
   );

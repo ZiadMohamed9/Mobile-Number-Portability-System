@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ApiErrorMessageService } from '../../../core/services/api-error-message.service';
 import { PortingRequestApiService } from '../../../core/services/porting-request-api.service';
+import { PortingRequestDraftService } from '../../../core/services/porting-request-draft.service';
 
 @Component({
   selector: 'app-new-request-page',
@@ -24,12 +25,13 @@ import { PortingRequestApiService } from '../../../core/services/porting-request
   templateUrl: './new-request-page.html',
   styleUrl: './new-request-page.scss',
 })
-export class NewRequestPage {
+export class NewRequestPage implements OnInit {
   private readonly api = inject(PortingRequestApiService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly errorMessages = inject(ApiErrorMessageService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly draftService = inject(PortingRequestDraftService);
 
   protected readonly requestForm = new FormGroup({
     phoneNumber: new FormControl('', {
@@ -43,6 +45,13 @@ export class NewRequestPage {
   });
   protected readonly loading = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+
+  ngOnInit(): void {
+    const draft = this.draftService.consume();
+    if (draft) {
+      this.requestForm.patchValue(draft);
+    }
+  }
 
   protected submitRequest(): void {
     if (this.requestForm.invalid || this.loading()) {

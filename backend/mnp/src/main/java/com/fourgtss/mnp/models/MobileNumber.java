@@ -40,6 +40,19 @@ public class MobileNumber {
     protected MobileNumber() {
     }
 
+    public static MobileNumber create(String phoneNumber, Subscriber subscriber,
+                                       Operator operator, ServiceStatus serviceStatus,
+                                       Instant currentOperatorSince) {
+        MobileNumber mobileNumber = new MobileNumber();
+        mobileNumber.phoneNumber = phoneNumber;
+        mobileNumber.subscriber = subscriber;
+        mobileNumber.originOperator = operator;
+        mobileNumber.currentOperator = operator;
+        mobileNumber.serviceStatus = serviceStatus;
+        mobileNumber.currentOperatorSince = currentOperatorSince;
+        return mobileNumber;
+    }
+
     public void portTo(Operator recipientOperator, Instant portedAt) {
         currentOperator = recipientOperator;
         currentOperatorSince = portedAt;

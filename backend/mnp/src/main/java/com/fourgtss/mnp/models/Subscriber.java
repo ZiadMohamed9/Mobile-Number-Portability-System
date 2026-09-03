@@ -34,6 +34,14 @@ public class Subscriber {
     protected Subscriber() {
     }
 
+    public static Subscriber create(byte[] nationalIdHmac, String nationalIdLast4, String fullName) {
+        Subscriber subscriber = new Subscriber();
+        subscriber.nationalIdHmac = nationalIdHmac;
+        subscriber.nationalIdLast4 = nationalIdLast4;
+        subscriber.fullName = fullName;
+        return subscriber;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)

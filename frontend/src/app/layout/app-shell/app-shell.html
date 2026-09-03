@@ -7,6 +7,13 @@
 
     <nav class="primary-nav" aria-label="Primary navigation">
       <a
+        routerLink="/numbers/new"
+        [class.primary-nav__link--active]="isAddNumberActive()"
+        class="primary-nav__link"
+      >
+        Add number
+      </a>
+      <a
         routerLink="/requests/new"
         [class.primary-nav__link--active]="isNewRequestActive()"
         class="primary-nav__link"

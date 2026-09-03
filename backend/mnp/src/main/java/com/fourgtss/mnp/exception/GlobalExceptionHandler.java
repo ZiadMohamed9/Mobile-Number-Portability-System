@@ -3,6 +3,7 @@ package com.fourgtss.mnp.exception;
 import com.fourgtss.mnp.dto.ApiErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -33,12 +34,34 @@ public class GlobalExceptionHandler {
             Map.entry(PortingRequestErrorCode.REQUEST_NOT_PENDING, HttpStatus.CONFLICT)
     );
 
+    private static final Map<MobileNumberErrorCode, HttpStatus> MOBILE_NUMBER_STATUS_MAP = Map.ofEntries(
+            Map.entry(MobileNumberErrorCode.PHONE_NUMBER_ALREADY_EXISTS, HttpStatus.CONFLICT),
+            Map.entry(MobileNumberErrorCode.OPERATOR_PREFIX_MISMATCH, HttpStatus.BAD_REQUEST),
+            Map.entry(MobileNumberErrorCode.FUTURE_DATE, HttpStatus.BAD_REQUEST),
+            Map.entry(MobileNumberErrorCode.UNKNOWN_OPERATOR, HttpStatus.BAD_REQUEST)
+    );
+
     @ExceptionHandler(PortingRequestException.class)
     public ResponseEntity<ApiErrorResponse> handlePortingRequest(PortingRequestException exception) {
         PortingRequestErrorCode errorCode = exception.getErrorCode();
         HttpStatus status = STATUS_MAP.getOrDefault(errorCode, HttpStatus.INTERNAL_SERVER_ERROR);
         return ResponseEntity.status(status)
                 .body(new ApiErrorResponse(errorCode.name(), toHumanReadable(errorCode.name())));
+    }
+
+    @ExceptionHandler(MobileNumberException.class)
+    public ResponseEntity<ApiErrorResponse> handleMobileNumber(MobileNumberException exception) {
+        MobileNumberErrorCode errorCode = exception.getErrorCode();
+        HttpStatus status = MOBILE_NUMBER_STATUS_MAP.getOrDefault(errorCode, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.status(status)
+                .body(new ApiErrorResponse(errorCode.name(), toHumanReadable(errorCode.name())));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiErrorResponse> handleDataIntegrity(DataIntegrityViolationException exception) {
+        log.warn("Data integrity violation", exception);
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ApiErrorResponse("DATA_CONFLICT", "The operation conflicts with existing data"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -17,6 +17,14 @@ export const routes: Routes = [
       import('./layout/app-shell/app-shell').then((component) => component.AppShell),
     children: [
       {
+        path: 'numbers/new',
+        loadComponent: () =>
+          import('./features/numbers/new-number-page/new-number-page').then(
+            (component) => component.NewNumberPage,
+          ),
+        title: 'Add number | MNP Console',
+      },
+      {
         path: 'requests/new',
         loadComponent: () =>
           import('./features/requests/new-request-page/new-request-page').then(

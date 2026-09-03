@@ -18,6 +18,11 @@ const ERROR_MESSAGES: Readonly<Record<string, string>> = {
   VALIDATION_ERROR: 'Please check the entered information and try again.',
   MALFORMED_REQUEST: 'The request could not be sent. Please check the entered information.',
   INVALID_PARAMETER: 'The selected request view is invalid.',
+  PHONE_NUMBER_ALREADY_EXISTS: 'This phone number is already registered.',
+  OPERATOR_PREFIX_MISMATCH: 'The phone number prefix does not match the selected operator.',
+  FUTURE_DATE: 'The start date cannot be in the future.',
+  UNKNOWN_OPERATOR: 'The selected operator was not found.',
+  DATA_CONFLICT: 'The operation conflicts with existing data.',
 };
 
 @Injectable({ providedIn: 'root' })

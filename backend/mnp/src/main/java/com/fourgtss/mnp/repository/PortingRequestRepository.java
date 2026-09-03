@@ -3,14 +3,12 @@ package com.fourgtss.mnp.repository;
 import com.fourgtss.mnp.models.PortingRequest;
 import com.fourgtss.mnp.models.enums.PortingRequestStatus;
 import jakarta.persistence.LockModeType;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -58,9 +56,21 @@ public interface PortingRequestRepository extends JpaRepository<PortingRequest, 
             PortingRequestStatus status
     );
 
-    List<PortingRequest> findByStatus(PortingRequestStatus status);
-
-    List<PortingRequest> findByDonorOperator_Id(Short donorOperatorId);
-
-    List<PortingRequest> findByRecipientOperator_Id(Short receiverOperatorId);
+    @EntityGraph(attributePaths = {
+            "mobileNumber",
+            "donorOperator",
+            "recipientOperator"
+    })
+    @Query("""
+        SELECT pr
+        FROM PortingRequest pr
+        WHERE pr.donorOperator.id = :operatorId
+           OR pr.recipientOperator.id = :operatorId
+           OR pr.status = com.fourgtss.mnp.models.enums.PortingRequestStatus.ACCEPTED
+        ORDER BY pr.requestedAt DESC
+    """)
+    Page<PortingRequest> findVisibleToOperator(
+            @Param("operatorId") Short operatorId,
+            Pageable pageable
+    );
 }

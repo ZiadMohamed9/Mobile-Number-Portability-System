@@ -8,8 +8,6 @@ import lombok.Getter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.util.Objects;
-
 @Getter
 @Entity
 @Table(name = "operator")
@@ -34,14 +32,16 @@ public class Operator {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Operator that)) return false;
-        return Objects.equals(id, that.id);
+        if (this == o)
+            return true;
+        if (!(o instanceof Operator that))
+            return false;
+        return id != null && id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return getClass().hashCode();
     }
 
 }

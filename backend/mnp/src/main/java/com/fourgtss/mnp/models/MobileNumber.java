@@ -3,14 +3,12 @@ package com.fourgtss.mnp.models;
 import com.fourgtss.mnp.models.enums.ServiceStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "mobile_number")
 public class MobileNumber {
@@ -42,10 +40,17 @@ public class MobileNumber {
     protected MobileNumber() {
     }
 
+    public void portTo(Operator recipientOperator, Instant portedAt) {
+        currentOperator = recipientOperator;
+        currentOperatorSince = portedAt;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MobileNumber that)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof MobileNumber that))
+            return false;
         return phoneNumber.equals(that.phoneNumber);
     }
 

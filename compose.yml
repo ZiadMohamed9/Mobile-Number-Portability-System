@@ -34,6 +34,7 @@ services:
       MNP_DB_URL: jdbc:mysql://mysql:3306/${MNP_DB_NAME:-mnp}?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true
       MNP_DB_USERNAME: ${MNP_DB_USERNAME:-mnp}
       MNP_DB_PASSWORD: ${MNP_DB_PASSWORD:?Set MNP_DB_PASSWORD in .env}
+      MNP_NATIONAL_ID_HMAC_KEY: ${MNP_NATIONAL_ID_HMAC_KEY:?Set MNP_NATIONAL_ID_HMAC_KEY in .env}
       MNP_SERVER_PORT: 8080
       MNP_LOG_LEVEL: ${MNP_LOG_LEVEL:-INFO}
     ports:

@@ -7,12 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "subscriber")
 public class Subscriber {
@@ -38,8 +36,10 @@ public class Subscriber {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Subscriber that)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Subscriber that))
+            return false;
         return id != null && id.equals(that.id);
     }
 

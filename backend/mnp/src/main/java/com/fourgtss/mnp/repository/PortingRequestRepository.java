@@ -51,6 +51,18 @@ public interface PortingRequestRepository extends JpaRepository<PortingRequest, 
     """)
     Optional<PortingRequest> findForDecision(@Param("requestId") Long requestId);
 
+    @EntityGraph(attributePaths = {
+            "mobileNumber",
+            "donorOperator",
+            "recipientOperator"
+    })
+    @Query("""
+        SELECT pr
+        FROM PortingRequest pr
+        WHERE pr.id = :requestId
+    """)
+    Optional<PortingRequest> findDetailedById(@Param("requestId") Long requestId);
+
     boolean existsByMobileNumberPhoneNumberAndStatus(
             String phoneNumber,
             PortingRequestStatus status
@@ -70,6 +82,55 @@ public interface PortingRequestRepository extends JpaRepository<PortingRequest, 
         ORDER BY pr.requestedAt DESC
     """)
     Page<PortingRequest> findVisibleToOperator(
+            @Param("operatorId") Short operatorId,
+            Pageable pageable
+    );
+
+    @EntityGraph(attributePaths = {
+            "mobileNumber",
+            "donorOperator",
+            "recipientOperator"
+    })
+    @Query("""
+        SELECT pr
+        FROM PortingRequest pr
+        WHERE pr.status = com.fourgtss.mnp.models.enums.PortingRequestStatus.ACCEPTED
+        ORDER BY pr.resolvedAt DESC
+    """)
+    Page<PortingRequest> findAccepted(Pageable pageable);
+
+    @EntityGraph(attributePaths = {
+            "mobileNumber",
+            "donorOperator",
+            "recipientOperator"
+    })
+    @Query("""
+        SELECT pr
+        FROM PortingRequest pr
+        WHERE pr.recipientOperator.id = :operatorId
+        ORDER BY pr.requestedAt DESC
+    """)
+    Page<PortingRequest> findByRecipientOperator(
+            @Param("operatorId") Short operatorId,
+            Pageable pageable
+    );
+
+    @EntityGraph(attributePaths = {
+            "mobileNumber",
+            "donorOperator",
+            "recipientOperator"
+    })
+    @Query("""
+        SELECT pr
+        FROM PortingRequest pr
+        WHERE pr.donorOperator.id = :operatorId
+        ORDER BY CASE
+            WHEN pr.status = com.fourgtss.mnp.models.enums.PortingRequestStatus.PENDING THEN 0
+            ELSE 1
+        END,
+        pr.requestedAt DESC
+    """)
+    Page<PortingRequest> findByDonorOperator(
             @Param("operatorId") Short operatorId,
             Pageable pageable
     );

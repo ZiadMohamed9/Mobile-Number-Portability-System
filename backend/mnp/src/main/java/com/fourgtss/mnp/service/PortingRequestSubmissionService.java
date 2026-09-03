@@ -36,7 +36,8 @@ public class PortingRequestSubmissionService {
         PortingRequest pendingRequest = PortingRequest.pending(
                 mobileNumber,
                 recipientOperator,
-                mobileNumber.getCurrentOperator());
+                mobileNumber.getCurrentOperator()
+        );
 
         return portingRequestResponseMapper.from(portingRequestRepository.saveAndFlush(pendingRequest));
     }

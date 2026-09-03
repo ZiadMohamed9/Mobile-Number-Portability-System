@@ -2,6 +2,7 @@ package com.fourgtss.mnp.controller;
 
 import com.fourgtss.mnp.dto.CreatePortingRequest;
 import com.fourgtss.mnp.dto.PortingRequestResponse;
+import com.fourgtss.mnp.dto.PortingRequestView;
 import com.fourgtss.mnp.dto.RejectPortingRequest;
 import com.fourgtss.mnp.service.PortingRequestDecisionService;
 import com.fourgtss.mnp.service.PortingRequestQueryService;
@@ -34,8 +35,9 @@ public class PortingRequestController {
     @GetMapping
     public ResponseEntity<Page<PortingRequestResponse>> list(
             @RequestHeader("Organization") String operatorCode,
+            @RequestParam(required = false) PortingRequestView view,
             Pageable pageable) {
-        return ResponseEntity.ok(queryService.listVisibleRequests(operatorCode, pageable));
+        return ResponseEntity.ok(queryService.listRequests(operatorCode, view, pageable));
     }
 
     @GetMapping("/{id}")

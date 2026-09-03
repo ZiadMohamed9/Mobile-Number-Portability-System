@@ -14,7 +14,10 @@ public class OperatorResolver {
     private final OperatorRepository operatorRepository;
 
     public Operator requireByCode(String operatorCode) {
-        return operatorRepository.findByCode(operatorCode)
+        if (operatorCode == null) {
+            throw new PortingRequestException(PortingRequestErrorCode.UNKNOWN_ORGANIZATION);
+        }
+        return operatorRepository.findByCode(operatorCode.trim().toUpperCase())
                 .orElseThrow(() -> new PortingRequestException(PortingRequestErrorCode.UNKNOWN_ORGANIZATION));
     }
 }

@@ -1,6 +1,7 @@
 package com.fourgtss.mnp.service;
 
 import com.fourgtss.mnp.dto.PortingRequestResponse;
+import com.fourgtss.mnp.dto.PortingRequestView;
 import com.fourgtss.mnp.exception.PortingRequestErrorCode;
 import com.fourgtss.mnp.exception.PortingRequestException;
 import com.fourgtss.mnp.mapper.PortingRequestResponseMapper;
@@ -22,11 +23,11 @@ public class PortingRequestQueryService {
     private final OperatorResolver operatorResolver;
     private final PortingRequestResponseMapper portingRequestResponseMapper;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PortingRequestResponse getById(Long requestId, String actorOperatorCode) {
         Operator actorOperator = operatorResolver.requireByCode(actorOperatorCode);
 
-        PortingRequest portingRequest = portingRequestRepository.findForDecision(requestId)
+        PortingRequest portingRequest = portingRequestRepository.findDetailedById(requestId)
                 .orElseThrow(() -> new PortingRequestException(PortingRequestErrorCode.PORTING_REQUEST_NOT_FOUND));
 
         verifyVisibility(portingRequest, actorOperator);
@@ -34,13 +35,21 @@ public class PortingRequestQueryService {
         return portingRequestResponseMapper.from(portingRequest);
     }
 
-    @Transactional
-    public Page<PortingRequestResponse> listVisibleRequests(String actorOperatorCode, Pageable pageable) {
+    @Transactional(readOnly = true)
+    public Page<PortingRequestResponse> listRequests(
+            String actorOperatorCode,
+            PortingRequestView view,
+            Pageable pageable) {
         Operator actorOperator = operatorResolver.requireByCode(actorOperatorCode);
 
-        return portingRequestRepository
-                .findVisibleToOperator(actorOperator.getId(), pageable)
-                .map(portingRequestResponseMapper::from);
+        Page<PortingRequest> requests = switch (view) {
+            case ACCEPTED -> portingRequestRepository.findAccepted(pageable);
+            case RECIPIENT -> portingRequestRepository.findByRecipientOperator(actorOperator.getId(), pageable);
+            case DONOR -> portingRequestRepository.findByDonorOperator(actorOperator.getId(), pageable);
+            case null -> portingRequestRepository.findVisibleToOperator(actorOperator.getId(), pageable);
+        };
+
+        return requests.map(portingRequestResponseMapper::from);
     }
 
     private void verifyVisibility(PortingRequest portingRequest, Operator actorOperator) {

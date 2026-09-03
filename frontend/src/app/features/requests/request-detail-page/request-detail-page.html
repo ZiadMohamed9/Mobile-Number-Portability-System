@@ -1,0 +1,124 @@
+<a mat-button class="back-link" routerLink="/requests" [queryParams]="{ view: backView() }">
+  Back to requests
+</a>
+
+@if (loading()) {
+  <section class="detail-skeleton" aria-label="Loading request details" aria-busy="true">
+    <span class="detail-skeleton__title"></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </section>
+} @else if (errorMessage()) {
+  <section class="state-panel" role="alert">
+    <h1>Request unavailable</h1>
+    <p>{{ errorMessage() }}</p>
+    <button mat-stroked-button type="button" (click)="reloadRequest()">Try again</button>
+  </section>
+} @else if (request(); as currentRequest) {
+  <header class="detail-heading">
+    <div>
+      <p class="page-context">Request #{{ currentRequest.id }}</p>
+      <h1>{{ currentRequest.phoneNumber }}</h1>
+      <p>{{ currentRequest.donorOperatorCode }} to {{ currentRequest.recipientOperatorCode }}</p>
+    </div>
+    <app-status-badge [status]="currentRequest.status" />
+  </header>
+
+  @if (canDecide()) {
+    <section class="decision-panel" aria-labelledby="decision-title">
+      <div>
+        <h2 id="decision-title">Donor decision required</h2>
+        <p>Review the request and record your organization’s decision before it expires.</p>
+      </div>
+      <div class="decision-panel__actions">
+        <button
+          mat-stroked-button
+          type="button"
+          [disabled]="actionLoading()"
+          (click)="openRejectDialog()"
+        >
+          Reject
+        </button>
+        <button
+          mat-flat-button
+          type="button"
+          [disabled]="actionLoading()"
+          (click)="openAcceptDialog()"
+        >
+          @if (actionLoading()) {
+            <mat-spinner diameter="18" aria-label="Saving decision" />
+            <span>Saving</span>
+          } @else {
+            <span>Accept</span>
+          }
+        </button>
+      </div>
+      @if (actionError()) {
+        <p class="action-error" role="alert">{{ actionError() }}</p>
+      }
+    </section>
+  }
+
+  <section class="detail-section" aria-labelledby="route-title">
+    <h2 id="route-title">Transfer route</h2>
+    <dl class="detail-grid">
+      <div>
+        <dt>Donor operator</dt>
+        <dd>{{ currentRequest.donorOperatorCode }}</dd>
+      </div>
+      <div>
+        <dt>Recipient operator</dt>
+        <dd>{{ currentRequest.recipientOperatorCode }}</dd>
+      </div>
+      <div>
+        <dt>Mobile number</dt>
+        <dd>{{ currentRequest.phoneNumber }}</dd>
+      </div>
+      <div>
+        <dt>Current status</dt>
+        <dd><app-status-badge [status]="currentRequest.status" /></dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="detail-section" aria-labelledby="timeline-title">
+    <h2 id="timeline-title">Timeline</h2>
+    <dl class="detail-grid">
+      <div>
+        <dt>Requested</dt>
+        <dd>
+          <time [attr.datetime]="currentRequest.requestedAt">
+            {{ currentRequest.requestedAt | date: 'medium' }}
+          </time>
+        </dd>
+      </div>
+      <div>
+        <dt>Expires</dt>
+        <dd>
+          <time [attr.datetime]="currentRequest.expiresAt">
+            {{ currentRequest.expiresAt | date: 'medium' }}
+          </time>
+        </dd>
+      </div>
+      <div>
+        <dt>Resolved</dt>
+        <dd>
+          @if (currentRequest.resolvedAt) {
+            <time [attr.datetime]="currentRequest.resolvedAt">
+              {{ currentRequest.resolvedAt | date: 'medium' }}
+            </time>
+          } @else {
+            Not resolved
+          }
+        </dd>
+      </div>
+      @if (currentRequest.status === 'REJECTED') {
+        <div>
+          <dt>Rejection reason</dt>
+          <dd>{{ rejectionLabel(currentRequest.rejectionReason) }}</dd>
+        </div>
+      }
+    </dl>
+  </section>
+}

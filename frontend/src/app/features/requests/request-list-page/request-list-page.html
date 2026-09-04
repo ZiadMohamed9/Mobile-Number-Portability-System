@@ -1,0 +1,113 @@
+<header class="page-heading">
+  <div>
+    <p class="page-context">Portability activity</p>
+    <h1>Requests</h1>
+    <p>Review network-wide acceptances and the requests connected to your organization.</p>
+  </div>
+  <a mat-flat-button routerLink="/requests/new">New request</a>
+</header>
+
+<nav mat-tab-nav-bar [tabPanel]="tabPanel" aria-label="Request views">
+  @for (tab of tabs; track tab.routeValue) {
+    <a
+      mat-tab-link
+      [routerLink]="[]"
+      [queryParams]="{ view: tab.routeValue, page: 0, size: pageSize() }"
+      [active]="activeTab().routeValue === tab.routeValue"
+    >
+      {{ tab.label }}
+    </a>
+  }
+</nav>
+
+<mat-tab-nav-panel #tabPanel>
+  <div class="view-description">
+    <p>{{ activeTab().description }}</p>
+  </div>
+
+  @if (loading()) {
+    <section class="request-skeleton" aria-label="Loading requests" aria-busy="true">
+      @for (row of skeletonRows; track row) {
+        <div class="request-skeleton__row">
+          <span></span><span></span><span></span><span></span>
+        </div>
+      }
+    </section>
+  } @else if (errorMessage()) {
+    <section class="state-panel" role="alert">
+      <h2>Requests are unavailable</h2>
+      <p>{{ errorMessage() }}</p>
+      <button mat-stroked-button type="button" (click)="reloadRequests()">Try again</button>
+    </section>
+  } @else if (requests().length === 0) {
+    <section class="state-panel">
+      <h2>{{ emptyTitle() }}</h2>
+      <p>{{ emptyMessage() }}</p>
+      @if (activeTab().routeValue === 'recipient') {
+        <a mat-stroked-button routerLink="/requests/new">Create request</a>
+      }
+    </section>
+  } @else {
+    <div class="desktop-table">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Request</th>
+            <th scope="col">Mobile number</th>
+            <th scope="col">Route</th>
+            <th scope="col">Requested</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (request of requests(); track request.id) {
+            <tr>
+              <td>
+                <a
+                  [routerLink]="['/requests', request.id]"
+                  [queryParams]="{ view: activeTab().routeValue }"
+                >
+                  #{{ request.id }}
+                </a>
+              </td>
+              <td class="phone-number">{{ request.phoneNumber }}</td>
+              <td>
+                <span class="route-copy">
+                  {{ request.donorOperatorCode }} to {{ request.recipientOperatorCode }}
+                </span>
+              </td>
+              <td>{{ request.requestedAt | date: 'medium' }}</td>
+              <td><app-status-badge [status]="request.status" /></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mobile-list">
+      @for (request of requests(); track request.id) {
+        <a
+          class="mobile-request"
+          [routerLink]="['/requests', request.id]"
+          [queryParams]="{ view: activeTab().routeValue }"
+        >
+          <span class="mobile-request__topline">
+            <strong>{{ request.phoneNumber }}</strong>
+            <app-status-badge [status]="request.status" />
+          </span>
+          <span>{{ request.donorOperatorCode }} to {{ request.recipientOperatorCode }}</span>
+          <span>Request #{{ request.id }} · {{ request.requestedAt | date: 'mediumDate' }}</span>
+        </a>
+      }
+    </div>
+
+    <mat-paginator
+      [length]="totalElements()"
+      [pageIndex]="pageIndex()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="[10, 20, 50]"
+      aria-label="Select requests page"
+      (page)="changePage($event)"
+    />
+  }
+</mat-tab-nav-panel>

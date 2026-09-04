@@ -1,0 +1,60 @@
+<main class="organization-page">
+  <section class="organization-intro" aria-labelledby="organization-title">
+    <div class="brand-lockup">
+      <span class="brand-lockup__mark" aria-hidden="true">MN</span>
+      <span>MNP Console</span>
+    </div>
+
+    <div>
+      <p class="context-label">Operator workspace</p>
+      <h1 id="organization-title">Move numbers with clarity.</h1>
+      <p class="intro-copy">
+        Submit portability requests, follow their progress, and resolve incoming decisions from one
+        focused workspace.
+      </p>
+    </div>
+
+    <p class="security-note">
+      Organization codes are used for this development environment. Authentication can replace this
+      step later.
+    </p>
+  </section>
+
+  <section class="organization-form" aria-labelledby="access-title">
+    <div>
+      <h2 id="access-title">Enter your organization</h2>
+      <p>Use the operator code configured in the portability service.</p>
+    </div>
+
+    <form (ngSubmit)="validateOrganization()" (submit)="$event.preventDefault()">
+      <mat-form-field appearance="outline">
+        <mat-label>Organization code</mat-label>
+        <input
+          matInput
+          [formControl]="organizationCode"
+          autocomplete="organization"
+          maxlength="20"
+          spellcheck="false"
+          (keydown.enter)="validateOrganization()"
+        />
+        <mat-hint>Up to 20 characters</mat-hint>
+        @if (organizationCode.hasError('required')) {
+          <mat-error>Organization code is required.</mat-error>
+        }
+      </mat-form-field>
+
+      @if (errorMessage()) {
+        <p class="form-error" role="alert">{{ errorMessage() }}</p>
+      }
+
+      <button mat-flat-button type="button" (click)="validateOrganization()" [disabled]="loading()">
+        @if (loading()) {
+          <mat-spinner diameter="18" aria-label="Validating organization" />
+          <span>Checking</span>
+        } @else {
+          <span>Continue</span>
+        }
+      </button>
+    </form>
+  </section>
+</main>

@@ -1,0 +1,160 @@
+@use '@angular/material' as mat;
+
+html {
+  min-height: 100%;
+
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$violet-palette,
+        tertiary: mat.$cyan-palette,
+      ),
+      typography: (
+        plain-family: (
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif,
+        ),
+        brand-family: (
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif,
+        ),
+        regular-weight: 400,
+        medium-weight: 600,
+        bold-weight: 700,
+      ),
+      density: 0,
+    )
+  );
+}
+
+:root {
+  --color-background: oklch(1 0 0);
+  --color-surface: oklch(0.97 0.008 280);
+  --color-surface-strong: oklch(0.945 0.012 280);
+  --color-ink: oklch(0.23 0.02 280);
+  --color-muted-ink: oklch(0.46 0.025 280);
+  --color-border: oklch(0.88 0.012 280);
+  --color-primary: oklch(0.42 0.1 280);
+  --color-primary-hover: oklch(0.36 0.1 280);
+  --color-primary-light: oklch(0.88 0.055 280);
+  --color-on-primary: oklch(0.99 0 0);
+  --color-on-dark: oklch(0.98 0.006 280);
+  --color-on-dark-muted: oklch(0.8 0.018 280);
+  --color-error-surface: oklch(0.95 0.025 25);
+  --color-error-ink: oklch(0.4 0.15 25);
+  --color-success-surface: oklch(0.94 0.035 155);
+  --color-success-ink: oklch(0.35 0.1 155);
+  --color-warning-surface: oklch(0.96 0.05 88);
+  --color-warning-ink: oklch(0.4 0.09 70);
+  --color-neutral-surface: oklch(0.94 0.008 280);
+  --color-neutral-ink: oklch(0.4 0.02 280);
+  --page-width: 73.75rem;
+  --page-gutter: clamp(1rem, 3vw, 1.5rem);
+  --layer-sticky: 10;
+  --layer-dialog: 30;
+
+  --mat-sys-primary: var(--color-primary);
+  --mat-sys-on-primary: var(--color-on-primary);
+  --mat-sys-primary-container: var(--color-primary-light);
+  --mat-sys-on-primary-container: var(--color-ink);
+  --mat-sys-surface: var(--color-background);
+  --mat-sys-surface-container: var(--color-surface);
+  --mat-sys-surface-container-high: var(--color-surface-strong);
+  --mat-sys-on-surface: var(--color-ink);
+  --mat-sys-on-surface-variant: var(--color-muted-ink);
+  --mat-sys-outline: var(--color-muted-ink);
+  --mat-sys-outline-variant: var(--color-border);
+  --mat-sys-error: var(--color-error-ink);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 20rem;
+  min-height: 100%;
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-ink);
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 3px solid color-mix(in oklch, var(--color-primary) 70%, white);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--color-primary-light);
+  color: var(--color-ink);
+}
+
+::view-transition-old(root) {
+  animation: 180ms ease-out both page-out;
+}
+
+::view-transition-new(root) {
+  animation: 180ms ease-out both page-in;
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.mat-mdc-unelevated-button.mat-primary {
+  --mdc-filled-button-container-color: var(--color-primary);
+  --mdc-filled-button-label-text-color: var(--color-on-primary);
+}
+
+.mat-mdc-unelevated-button.mat-primary:hover {
+  --mdc-filled-button-container-color: var(--color-primary-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}

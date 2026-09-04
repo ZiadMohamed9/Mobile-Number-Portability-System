@@ -1,0 +1,6 @@
+spring:
+  flyway:
+    locations: classpath:db/migration,classpath:db/dev
+
+mnp:
+  national-id-hmac-key: ${MNP_NATIONAL_ID_HMAC_KEY:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=}

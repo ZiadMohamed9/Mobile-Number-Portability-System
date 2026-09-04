@@ -1,0 +1,37 @@
+.decision-dialog {
+  width: min(30rem, calc(100vw - 2rem));
+  padding: 1.5rem;
+}
+
+h2,
+p {
+  margin: 0;
+}
+
+h2 {
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+p {
+  margin-top: 0.75rem;
+  color: var(--color-muted-ink);
+  line-height: 1.6;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-top: 1.25rem;
+}
+
+.decision-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.reject-button {
+  --mdc-filled-button-container-color: var(--color-error-ink);
+  --mdc-filled-button-label-text-color: white;
+}

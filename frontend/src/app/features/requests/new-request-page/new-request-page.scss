@@ -1,0 +1,101 @@
+:host {
+  display: block;
+  max-width: 48rem;
+}
+
+.page-heading {
+  margin-bottom: 2rem;
+}
+
+.page-context {
+  margin: 0 0 0.65rem;
+  color: var(--color-primary);
+  font-size: 0.82rem;
+  font-weight: 720;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.page-heading > p:last-child,
+.section-heading p {
+  max-width: 65ch;
+  margin: 0.8rem 0 0;
+  color: var(--color-muted-ink);
+  line-height: 1.65;
+}
+
+.request-form-surface {
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-background);
+}
+
+.section-heading {
+  padding: 1.5rem 1.5rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 680;
+}
+
+.section-heading p {
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+}
+
+form {
+  display: grid;
+  gap: 0.65rem;
+  padding: 1.5rem;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.form-error {
+  margin: 0 0 0.5rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 0.65rem;
+  background: var(--color-error-surface);
+  color: var(--color-error-ink);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.25rem;
+}
+
+.form-actions button {
+  min-width: 10.5rem;
+  min-height: 2.85rem;
+}
+
+button mat-spinner {
+  display: inline-block;
+  margin-right: 0.55rem;
+}
+
+@media (max-width: 560px) {
+  .section-heading,
+  form {
+    padding: 1.15rem;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}

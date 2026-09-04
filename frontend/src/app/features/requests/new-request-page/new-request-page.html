@@ -1,0 +1,59 @@
+<header class="page-heading">
+  <p class="page-context">Create request</p>
+  <h1>Start a number transfer</h1>
+  <p>Confirm the subscriber information before sending the request to the donor operator.</p>
+</header>
+
+<section class="request-form-surface" aria-labelledby="request-details-title">
+  <div class="section-heading">
+    <h2 id="request-details-title">Subscriber details</h2>
+    <p>Both values must match the subscriber record.</p>
+  </div>
+
+  <form [formGroup]="requestForm" (ngSubmit)="submitRequest()">
+    <mat-form-field appearance="outline">
+      <mat-label>Mobile number</mat-label>
+      <input
+        matInput
+        formControlName="phoneNumber"
+        inputmode="numeric"
+        autocomplete="tel"
+        maxlength="11"
+      />
+      <mat-hint>11 digits beginning with 01</mat-hint>
+      @if (requestForm.controls.phoneNumber.touched && requestForm.controls.phoneNumber.invalid) {
+        <mat-error>Enter a valid 11-digit mobile number.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>National ID</mat-label>
+      <input
+        matInput
+        formControlName="nationalId"
+        inputmode="numeric"
+        autocomplete="off"
+        maxlength="14"
+      />
+      <mat-hint>14 digits</mat-hint>
+      @if (requestForm.controls.nationalId.touched && requestForm.controls.nationalId.invalid) {
+        <mat-error>Enter a valid 14-digit national ID.</mat-error>
+      }
+    </mat-form-field>
+
+    @if (errorMessage()) {
+      <p class="form-error" role="alert">{{ errorMessage() }}</p>
+    }
+
+    <div class="form-actions">
+      <button mat-flat-button type="submit" [disabled]="loading()">
+        @if (loading()) {
+          <mat-spinner diameter="18" aria-label="Sending porting request" />
+          <span>Sending request</span>
+        } @else {
+          <span>Send request</span>
+        }
+      </button>
+    </div>
+  </form>
+</section>

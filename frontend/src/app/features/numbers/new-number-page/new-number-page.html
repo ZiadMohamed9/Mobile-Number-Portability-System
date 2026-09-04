@@ -1,0 +1,150 @@
+<header class="page-heading">
+  <p class="page-context">Register</p>
+  <h1>Add a mobile number</h1>
+  <p>Create a phone number record and its subscriber. The number will be assigned to the selected operator.</p>
+</header>
+
+@if (success(); as result) {
+  <section class="success-surface" aria-labelledby="success-title">
+    <div class="success-icon" aria-hidden="true">&#10003;</div>
+    <h2 id="success-title">Number created</h2>
+
+    <dl class="summary-grid">
+      <div>
+        <dt>Phone number</dt>
+        <dd>{{ result.phoneNumber }}</dd>
+      </div>
+      <div>
+        <dt>National ID</dt>
+        <dd>&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;{{ result.nationalIdLast4 }}</dd>
+      </div>
+      <div>
+        <dt>Operator</dt>
+        <dd>{{ result.currentOperatorCode }}</dd>
+      </div>
+      <div>
+        <dt>Status</dt>
+        <dd>{{ result.serviceStatus }}</dd>
+      </div>
+    </dl>
+
+    <div class="success-actions">
+      <button mat-stroked-button type="button" (click)="createAnother()">Create another</button>
+      <button mat-flat-button type="button" (click)="startPortingRequest()">Start porting request</button>
+    </div>
+  </section>
+} @else {
+  <section class="number-form-surface" aria-labelledby="number-details-title">
+    <div class="section-heading">
+      <h2 id="number-details-title">Number details</h2>
+      <p>Enter the subscriber information and assign an operator.</p>
+    </div>
+
+    <form [formGroup]="numberForm" (ngSubmit)="submitNumber()">
+      <mat-form-field appearance="outline">
+        <mat-label>Operator</mat-label>
+        <mat-select formControlName="operatorCode" id="operator-select">
+          @for (op of operators(); track op.code) {
+            <mat-option [value]="op.code">{{ op.displayName }} ({{ op.code }})</mat-option>
+          }
+        </mat-select>
+        @if (numberForm.controls.operatorCode.touched && numberForm.controls.operatorCode.invalid) {
+          <mat-error>Select an operator.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Phone number</mat-label>
+        <input
+          matInput
+          formControlName="phoneNumber"
+          inputmode="numeric"
+          autocomplete="tel"
+          maxlength="11"
+          id="phone-number-input"
+        />
+        <mat-hint>11 digits beginning with 01</mat-hint>
+        @if (numberForm.controls.phoneNumber.touched && numberForm.controls.phoneNumber.invalid) {
+          <mat-error>Enter a valid 11-digit mobile number.</mat-error>
+        }
+      </mat-form-field>
+
+      @if (prefixError) {
+        <p class="form-warning" role="alert">
+          The phone number prefix does not match the selected operator.
+        </p>
+      }
+
+      <mat-form-field appearance="outline">
+        <mat-label>National ID</mat-label>
+        <input
+          matInput
+          formControlName="nationalId"
+          inputmode="numeric"
+          autocomplete="off"
+          maxlength="14"
+          id="national-id-input"
+        />
+        <mat-hint>14 digits</mat-hint>
+        @if (numberForm.controls.nationalId.touched && numberForm.controls.nationalId.invalid) {
+          <mat-error>Enter a valid 14-digit national ID.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Full name</mat-label>
+        <input
+          matInput
+          formControlName="fullName"
+          autocomplete="name"
+          maxlength="150"
+          id="full-name-input"
+        />
+        <mat-hint>Subscriber's full name</mat-hint>
+        @if (numberForm.controls.fullName.touched && numberForm.controls.fullName.invalid) {
+          <mat-error>Enter a name (max 150 characters).</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Service status</mat-label>
+        <mat-select formControlName="serviceStatus" id="service-status-select">
+          @for (status of serviceStatuses; track status.value) {
+            <mat-option [value]="status.value">{{ status.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Current operator since</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          formControlName="currentOperatorSince"
+          [max]="maxDate"
+          id="operator-since-input"
+        />
+        <mat-datepicker-toggle matIconSuffix [for]="picker" />
+        <mat-datepicker #picker />
+        @if (numberForm.controls.currentOperatorSince.touched && numberForm.controls.currentOperatorSince.invalid) {
+          <mat-error>Select a date that is not in the future.</mat-error>
+        }
+      </mat-form-field>
+
+      @if (errorMessage()) {
+        <p class="form-error" role="alert">{{ errorMessage() }}</p>
+      }
+
+      <div class="form-actions">
+        <button mat-flat-button type="submit" [disabled]="loading()">
+          @if (loading()) {
+            <mat-spinner diameter="18" aria-label="Creating mobile number" />
+            <span>Creating number</span>
+          } @else {
+            <span>Create number</span>
+          }
+        </button>
+      </div>
+    </form>
+  </section>
+}

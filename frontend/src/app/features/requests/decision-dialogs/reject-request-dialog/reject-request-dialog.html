@@ -1,0 +1,23 @@
+<div class="decision-dialog">
+  <h2>Reject this request?</h2>
+  <p>Select the reason that will be recorded with the porting request.</p>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Rejection reason</mat-label>
+    <mat-select [formControl]="rejectionReason">
+      @for (reason of reasons; track reason.reason) {
+        <mat-option [value]="reason.reason">{{ reason.label }}</mat-option>
+      }
+    </mat-select>
+    @if (rejectionReason.touched && rejectionReason.invalid) {
+      <mat-error>Select a rejection reason.</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="decision-dialog__actions">
+    <button mat-button type="button" (click)="cancel()">Cancel</button>
+    <button mat-flat-button type="button" class="reject-button" (click)="confirm()">
+      Reject request
+    </button>
+  </div>
+</div>

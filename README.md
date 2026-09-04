@@ -6,6 +6,15 @@ Operator staff can register mobile numbers, submit a request to move a number to
 
 > This repository is a demonstration system. Organization selection is implemented with an HTTP header and browser storage; it is not user authentication and must not be treated as a production security boundary.
 
+## Assumptions
+
+The system was designed and built under the following assumptions:
+
+- Creating a porting request requires the phone number and the national ID connected to it.
+- The number must be in an active service state and must have been served by the donor operator for at least four months.
+- The donor operator can reject a porting request and must specify one of the predefined rejection reasons.
+- An additional page is provided to create phone numbers with subscribers, allowing operators to register test data for demonstration and validation purposes.
+
 ## Table of contents
 
 - [What the application does](#what-the-application-does)
